@@ -24,10 +24,10 @@ public class Client {
             // Calling the remote method using the obtained object
             stub.printMsg();
             Scanner scanner = new Scanner(System.in);
-            //matrix1 = fillMatrix("pierwsza macierz");
-            //matrix2 = fillMatrix("druga macierz");
-            matrix1= new int[][]{{1, 2}, {2, 3}};
-            matrix2= new int[][]{{4, 5}, {6, 7}};
+            matrix1 = fillMatrix("pierwsza macierz");
+            matrix2 = fillMatrix("druga macierz");
+            //matrix1= new int[][]{{1, 2}, {2, 3}};
+            //matrix2= new int[][]{{4, 5}, {6, 7}};
 
 
             for (int k = 0; k < 2; k++) {
@@ -42,7 +42,7 @@ public class Client {
             }
             long start = System.currentTimeMillis();
             int[][] clientReturnVal = stub.executeTask(matrix1,matrix2);
-            System.out.println("execution time:"+ (System.currentTimeMillis()-start));
+            System.out.println("execution time:"+ (System.currentTimeMillis()-start) +"ms");
             System.out.println("outcome: ");
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {

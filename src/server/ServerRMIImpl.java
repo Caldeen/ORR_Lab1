@@ -11,7 +11,8 @@ import java.util.concurrent.*;
 
 // Implementing the remote interface
 public class ServerRMIImpl implements ServerRMIInterface {
-    private final int threadNumber=Server.threadNumber;
+    private int threadNumber=Server.threadNumber;
+
     private class OperationCallable implements Callable<Integer[]> {
         private int x;
         private int y;
@@ -24,7 +25,6 @@ public class ServerRMIImpl implements ServerRMIInterface {
             this.op = op;
             this.dest = dest;
         }
-
         @Override
         public Integer[] call() throws Exception {
             int result;
@@ -44,7 +44,8 @@ public class ServerRMIImpl implements ServerRMIInterface {
 
     @Override
     public int[][] executeTask(int[][] a, int[][] b) throws RemoteException, ExecutionException, InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(threadNumber);
+        System.out.println("liczba: "+threadNumber);
+        ExecutorService executorService = Executors.newFixedThreadPool(Server.threadNumber);
         List<Callable<Integer[]>> tasks = new ArrayList<>();
         tasks.add(new OperationCallable(a[0][0], b[0][0], 1, 0));
         tasks.add(new OperationCallable(a[1][0], b[0][1], 1, 1));
@@ -87,6 +88,5 @@ public class ServerRMIImpl implements ServerRMIInterface {
         result[1][1] = futures.get(3).get()[0];
         executorService.shutdown();
         return result;
-
     }
-} 
+}

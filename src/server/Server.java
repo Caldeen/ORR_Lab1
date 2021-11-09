@@ -7,12 +7,13 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Server extends ServerRMIImpl {
     private List<Thread> agentThreads = new ArrayList<>();
-    public static final int threadNumber=5;
+    public static int threadNumber;
     public static void main(String args[]) {
-
+        threadNumber=Integer.valueOf(args[0]);
         try {
             // Instantiating the implementation class
             ServerRMIImpl serverRMI = new ServerRMIImpl();
@@ -34,4 +35,4 @@ public class Server extends ServerRMIImpl {
             e.printStackTrace();
         }
     }
-} 
+}
