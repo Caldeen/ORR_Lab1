@@ -1,5 +1,7 @@
 package server;
 
+import agent.Agent;
+
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
@@ -8,6 +10,7 @@ import java.util.List;
 
 public class Server extends ServerRMIImpl {
     private List<Thread> agentThreads = new ArrayList<>();
+    public static final int threadNumber=5;
     public static void main(String args[]) {
 
         try {
@@ -19,7 +22,10 @@ public class Server extends ServerRMIImpl {
             ServerRMIInterface stub = (ServerRMIInterface) UnicastRemoteObject.exportObject(serverRMI, 0);
             // Binding the remote object (stub) in the registry
             Registry registry = LocateRegistry.createRegistry(1345);
-
+            LocateRegistry.createRegistry(1346);
+            for (int i = 0; i < threadNumber; i++) {
+                Agent.main(new String[]{String.valueOf(i)});
+            }
             //agent.AgentRMIInterface agentStub = (agent.AgentRMIInterface) registry.lookup("agentRegistry");
             registry.bind("server.ServerRMIInterface", stub);
             System.err.println("Server ready");

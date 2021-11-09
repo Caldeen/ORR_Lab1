@@ -1,12 +1,17 @@
 package server;
 
+import agent.AgentRMIInterface;
+
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
 
 // Implementing the remote interface
 public class ServerRMIImpl implements ServerRMIInterface {
+    private final int threadNumber=Server.threadNumber;
     private class OperationCallable implements Callable<Integer[]> {
         private int x;
         private int y;
@@ -23,13 +28,12 @@ public class ServerRMIImpl implements ServerRMIInterface {
         @Override
         public Integer[] call() throws Exception {
             int result;
-            if (op == 0)
-                result = x + y;
-            else
-                result = x * y;
-            TimeUnit.MILLISECONDS.sleep(20);
-            Integer[] out = {result, dest};
-            return out;
+            Registry registry = LocateRegistry.getRegistry(1346);
+            int assignedAgent = dest%threadNumber;
+            // Looking up the registry for the remote object
+            AgentRMIInterface stub = (AgentRMIInterface) registry.lookup("agent "+assignedAgent);
+            result=stub.operation(x,y,op);
+            return new Integer[]{result, dest};
         }
     }
 
@@ -40,7 +44,7 @@ public class ServerRMIImpl implements ServerRMIInterface {
 
     @Override
     public int[][] executeTask(int[][] a, int[][] b) throws RemoteException, ExecutionException, InterruptedException {
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(threadNumber);
         List<Callable<Integer[]>> tasks = new ArrayList<>();
         tasks.add(new OperationCallable(a[0][0], b[0][0], 1, 0));
         tasks.add(new OperationCallable(a[1][0], b[0][1], 1, 1));
@@ -81,7 +85,7 @@ public class ServerRMIImpl implements ServerRMIInterface {
         result[1][0] = futures.get(1).get()[0];
         result[0][1] = futures.get(2).get()[0];
         result[1][1] = futures.get(3).get()[0];
-
+        executorService.shutdown();
         return result;
 
     }

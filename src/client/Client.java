@@ -40,8 +40,9 @@ public class Client {
                 System.out.print(matrix2[1][k]);
                 System.out.println();
             }
-
+            long start = System.currentTimeMillis();
             int[][] clientReturnVal = stub.executeTask(matrix1,matrix2);
+            System.out.println("execution time:"+ (System.currentTimeMillis()-start));
             System.out.println("outcome: ");
             for (int i = 0; i < 2; i++) {
                 for (int j = 0; j < 2; j++) {

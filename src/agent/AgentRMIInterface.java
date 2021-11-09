@@ -1,8 +1,8 @@
 package agent;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 public interface AgentRMIInterface extends Remote {
-    int multiply(int a, int b);
-    int add (int a, int b);
+    int operation(int x,int y, int op) throws RemoteException;
 }
